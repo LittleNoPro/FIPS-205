@@ -1,8 +1,8 @@
 # Stateless Hash-Based Digital Signature (FIPS 205)
 
-## Overview of the SLH-DSA Signature Scheme
+## 1. Overview of the SLH-DSA Signature Scheme
 
-**SLH-DSA** là một sơ đồ chữ ký dựa trên hàm băm không trạng thái (stateless hash-based signature scheme) được xây dựng bằng cách sử dụng các sơ đồ chữ ký dựa trên hàm băm khác làm thành phần: **(1) few-time signature scheme, forest of random subsets - FORS, và (2) multi-time signature scheme, eXtended Merkle Signture Scheme - XMSS**. **XMSS** được xây dựng bằng cách sử dụng sơ đồ chữ ký dùng một lần dựa trên hàm băm **Winternitz One-Time Signature Plus (WOTS⁺)** làm thành phần.
+**SLH-DSA** là một sơ đồ chữ ký dựa trên hàm băm phi trạng thái (stateless hash-based signature scheme) được xây dựng bằng cách sử dụng các sơ đồ chữ ký dựa trên hàm băm khác làm thành phần: **(1) few-time signature scheme, forest of random subsets - FORS, và (2) multi-time signature scheme, eXtended Merkle Signture Scheme - XMSS**. **XMSS** được xây dựng bằng cách sử dụng sơ đồ chữ ký dùng một lần dựa trên hàm băm **Winternitz One-Time Signature Plus (WOTS⁺)** làm thành phần.
 
 Về mặt khái niệm, một cặp khóa **SLH-DSA** bao gồm một tập hợp rất lớn các cặp khóa **FORS**. Sơ đồ chữ ký dùng vài lần **FORS** cho phép mỗi cặp khóa có thể ký an toàn một lượng thông điệp nhỏ. Một chữ ký **SLH-DSA** được tạo ra bằng cách tính toán một giá trị băm của thông điệp, sử dụng một phần của giá trị băm kết quả để chọn ngẫu nhiên một khóa **FORS**, và ký phần còn lại của giá trị băm thông điệp bằng khóa đó. Một chữ ký **SLH-DSA** bao gồm chữ ký **FORS** và thông tin xác thực của khóa công khai **FORS**. Thông tin xác thực được tạo ra bằng các chữ ký **XMSS**.
 
@@ -15,10 +15,27 @@ Hình dưới đây mô phỏng lại quá trình tạo ra chữ ký cho một t
 Thông tin xác thực cho một khóa công khai **FORS** là một chữ ký **hypertree**. Một **hypertree** là một cây của các cây **XMSS**. Cây này gồm $d$ lớp, trong đó lớp trên cùng là lớp thứ $d-1$ gồm một cây **XMSS** duy nhất, lớp kế tiếp có $2^{h'}$ cây **XMSS**,... và lớp thấp nhất (lớp $0$) có $2^{(d-1)h'}$ cây **XMSS**. Khóa công khai của mỗi cây **XMSS** ở các lớp $0 \rightarrow d-2$ được ký bởi một cây **XMSS** ở lớp cao hơn tiếp theo. Các khóa **XMSS** ở lớp $0$ có tổng cộng $2^{dh'} = 2^h$ khóa **WOTS⁺**, được sử dụng để ký $2^h$ khóa công khai **FORS** trong khóa công khai **SLH-DSA**. Chuỗi các chữ ký **XMSS** được sử dụng để xác thực một khóa công khai **FORS**, bắt đầu bằng khóa công khai **XMSS** ở lớp $d-1$, là một chữ ký **hypertree**. Một chữ ký **SLH-DSA** bao gồm chữ ký **FORS** cùng với chữ ký **hypertree** xác thực khóa công khai **FORS**.
 
 Khóa công khai của **SLH-DSA** bao gồm $2$ thành phần có $n$-byte:
-- (1) `PK.root`: khóa công khai (gốc của cây **XMSS**) ở lớp $d-1$.
-- (2) `PK.seed`: được sử dụng để tạo sự tách biệt giữa các cặp khóa **SLH-DSA** khác nhau.
+- **(1)** `PK.root`: khóa công khai (gốc của cây **XMSS**) ở lớp $d-1$.
+- **(2)** `PK.seed`: được sử dụng để tạo sự tách biệt giữa các cặp khóa **SLH-DSA** khác nhau.
 
 Khóa bí mật **SLH-DSA** bao gồm `SK.seed` ($n$-byte) được dùng để sinh ngẫu nhiên tất cả các giá trị bí mật cho các khóa **WOTS⁺** và **FORS**, cùng với một khóa $n$-byte `SK.prf` được sử dụng trong quá trình tạo băm ngẫu nhiên của thông điệp. Khóa bí mật **SLH-DSA** cũng bao gồm `PK.root` và `PK.seed`, vì chúng cần thiết trong cả quá trình tạo chữ ký và xác minh chữ ký.
+
+## 2. Functions and Addressing
+
+### 2.1 Hash Functions and Pseudorandom Functions
+
+**SLH-DSA** được thực hiện bởi $6$ hàm $-$ $\text{PRF}_{msg}, \text{H}_{msg}$
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## References
