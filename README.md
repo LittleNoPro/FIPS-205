@@ -8,6 +8,22 @@ Về mặt khái niệm, một cặp khóa **SLH-DSA** bao gồm một tập h�
 
 **XMSS** là một sơ đồ chữ ký dùng nhiều lần được tạo ra bằng cách kết hợp các chữ ký dùng một lần **WOTS⁺** và các cây **Merkle**. Một khóa **XMSS** bao gồm $2^{h'}$ khóa **WOTS⁺** và có thể ký $2^{h'}$ thông điệp. Các khóa công khai **WOTS⁺** tạo thành một cây **Merkle**, và nút gốc **(root)** của cây chính là khóa công khai **XMSS**. Một chữ ký **XMSS** bao gồm một chữ ký **WOTS⁺** và một đường dẫn xác thực trong cây **Merkle** cho khóa công khai **WOTS⁺**.
 
-Hình dưới đây mô phỏng lại quá trình tạo ra chữ ký cho một thông điệp. Các hình tam giác biểu diễn các cây **Merkle**, các hình vuông biểu diễn các khóa công khai **WOTS⁺**
+Hình dưới đây mô phỏng lại quá trình tạo ra chữ ký cho một thông điệp. Các hình tam giác biểu diễn các cây **XMSS**, các hình vuông biểu diễn các khóa công khai **WOTS⁺** và các hình tròn biểu diễn các nút bên trong cây **XMSS**. Trong một cây **XMSS**, các hình vuông và hình tròn được tô đậm biểu diễn đường dẫn xác thực của khóa công khai **WOTS⁺** cần thiết để xác minh chữ ký.
 
 ![alt text](/images/1.png)
+
+Thông tin xác thực cho một khóa công khai **FORS** là một chữ ký **hypertree**. Một **hypertree** là một cây của các cây **XMSS**. Cây này gồm $d$ lớp, trong đó lớp trên cùng là lớp thứ $d-1$ gồm một cây **XMSS** duy nhất, lớp kế tiếp có $2^{h'}$ cây **XMSS**,... và lớp thấp nhất (lớp $0$) có $2^{(d-1)h'}$ cây **XMSS**. Khóa công khai của mỗi cây **XMSS** ở các lớp $0 \rightarrow d-2$ được ký bởi một cây **XMSS** ở lớp cao hơn tiếp theo. Các khóa **XMSS** ở lớp $0$ có tổng cộng $2^{dh'} = 2^h$ khóa **WOTS⁺**, được sử dụng để ký $2^h$ khóa công khai **FORS** trong khóa công khai **SLH-DSA**. Chuỗi các chữ ký **XMSS** được sử dụng để xác thực một khóa công khai **FORS**, bắt đầu bằng khóa công khai **XMSS** ở lớp $d-1$, là một chữ ký **hypertree**. Một chữ ký **SLH-DSA** bao gồm chữ ký **FORS** cùng với chữ ký **hypertree** xác thực khóa công khai **FORS**.
+
+Khóa công khai của **SLH-DSA** bao gồm $2$ thành phần có $n$-byte:
+- (1) `PK.root`: khóa công khai (gốc của cây **XMSS**) ở lớp $d-1$.
+- (2) `PK.seed`: được sử dụng để tạo sự tách biệt giữa các cặp khóa **SLH-DSA** khác nhau.
+
+Khóa bí mật **SLH-DSA** bao gồm `SK.seed` ($n$-byte) được dùng để sinh ngẫu nhiên tất cả các giá trị bí mật cho các khóa **WOTS⁺** và **FORS**, cùng với một khóa $n$-byte `SK.prf` được sử dụng trong quá trình tạo băm ngẫu nhiên của thông điệp. Khóa bí mật **SLH-DSA** cũng bao gồm `PK.root` và `PK.seed`, vì chúng cần thiết trong cả quá trình tạo chữ ký và xác minh chữ ký.
+
+
+## References
+[1] Stateless Hash-Based Digital Signature Standard. https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.205.pdf
+
+[2] How do hash-based post-quantum digital signatures work? (Part 1) https://research.dorahacks.io/2022/10/26/hash-based-post-quantum-signatures-1/
+
+[3] How do hash-based post-quantum digital signatures work? (Part 2) https://research.dorahacks.io/2022/12/16/hash-based-post-quantum-signatures-2/
