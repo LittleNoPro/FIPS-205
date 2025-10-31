@@ -24,7 +24,13 @@ Khóa bí mật **SLH-DSA** bao gồm `SK.seed` ($n$-byte) được dùng để 
 
 ### 2.1 Hash Functions and Pseudorandom Functions
 
-**SLH-DSA** được thực hiện bởi $6$ hàm $-$ $PRF_{msg}, H_{msg}$
+**SLH-DSA** được thực hiện bởi $6$ hàm $- PRF_{msg}, H_{msg}, PRF, T_\mathbb{l}, H, F -$ chúng đều được xây dựng sử dụng hàm **hash** hoặc [XOFs](https://csrc.nist.gov/glossary/term/extendable_output_function) với độ dài đầu ra cố định. Đầu vào và đầu ra của mỗi **function** đều là các chuỗi bytes. Ta định nghĩa $\mathbb{B} = \{0,...,255 \}$ là một tập hợp các bytes, $\mathbb{B}^n$ là tập hợp các chuỗi bytes mà mỗi chuỗi có chính xác $n$-bytes và $\mathbb{B}^*$ là một tập hợp các chuỗi bytes. Chi tiết về các hàm:
+- $PRF_{msg}(SK.prf, opt\_rand, M) \ \ \  (\mathbb{B}^n \times \mathbb{B}^n \times \mathbb{B}^* \rightarrow \mathbb{B}^n)$: là hàm giả ngẫu nhiên (PRF) được sử dụng để tạo ra các giá trị ngẫu nhiên hóa $(R)$ cho việc băm ngẫu nhiên của thông điệp cần ký.
+- $H_{msg}(R, PK.seed, PK.root, M) \ \ \  (\mathbb{B}^n \times \mathbb{B}^n \times \mathbb{B}^n \times \mathbb{B}^* \rightarrow \mathbb{B}^n)$: hàm này được sử dụng để tạo **digest** cho thông điệp cần ký.
+- $PRF(PK.seed, SK.seed, ADRS) \ \ \  (\mathbb{B}^n \times \mathbb{B}^n \times \mathbb{B}^{32} \rightarrow \mathbb{B}^n)$: là một PRF được sử dụng để tạo các giá trị bí mật trong khóa riêng của **WOTS⁺** và **FORS**.
+- $T_l(PK.seed, ADRS, M_l) \ \ \  (\mathbb{B}^n \times \mathbb{B}^{32} \times \mathbb{B}^{ln} \rightarrow \mathbb{B}^n)$: đây là một hàm **hash** ánh xạ một thông điệp $ln$-bytes thành một thông điệp $n$-bytes.
+- $H(PK.seed, ADRS, M_2) \ \ \  (\mathbb{B}^n \times \mathbb{B}^{32} \times \mathbb{B}^{2n} \rightarrow \mathbb{B}^n)$: là một trường hợp đặc biệt của hàm $T_l$ khi nó nhận đầu vào là một thông điệp $2n$-bytes.
+- $F(PK.seed, ADRS, M_1) \ \ \  (\mathbb{B}^n \times \mathbb{B}^{32} \times \mathbb{B}^n \rightarrow \mathbb{B}^n)$: là một hàm **hash** nhập vào chuỗi $n$-bytes và xử lý tạo thành một chuỗi $n$-bytes.
 
 
 
