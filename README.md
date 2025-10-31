@@ -24,7 +24,7 @@ Khóa bí mật **SLH-DSA** bao gồm `SK.seed` ($n$-byte) được dùng để 
 
 ### 2.1 Hash Functions and Pseudorandom Functions
 
-**SLH-DSA** được thực hiện bởi $6$ hàm $-$ $\text{PRF}_{msg}, \text{H}_{msg}$
+**SLH-DSA** được thực hiện bởi $6$ hàm $-$ $PRF_{msg}, H_{msg}$
 
 
 
