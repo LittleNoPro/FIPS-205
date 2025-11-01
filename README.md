@@ -40,12 +40,51 @@ Cấu trúc của **ADRS** được chia thành $8$-words, mỗi word dài $4$-b
 - **Layer Address (4-bytes)**: chỉ định tầng của cây **XMSS** trong **hypertree**.
 - **Tree Address (12-bytes)**: chỉ định vị trí của một cây **XMSS** trong một tầng của **hypertree**. Cây **XMSS** trái cùng của lớp này có địa chỉ là $0$ và cây **XMSS** phải cùng của lớp $L$ có địa chỉ là $2^{(d - 1 - L)h'} -1$.
 - **Type (4-bytes)**: chỉ định loại địa chỉ, khác nhau tùy thuộc vào mục đích sử dụng.
-- **12 bytes**:
+- **12 bytes**: phụ thuộc vào **Type** của địa chỉ là gì.
 
+Chi tiết về từng **Type:**
+- **WOTS_HASH (Type = 0):**
+  - **Mục đích:** được sử dụng khi tính toán **hash chains** trong lược đồ chữ ký **WOTS⁺**.
+  - **Cấu trúc:**
+    - **Key pair address (4-bytes):** chỉ mục của cặp khóa **WOTS⁺** trong cây **XMSS**.
+    - **Chain address (4-bytes):** chỉ mục của chuỗi trong **WOTS⁺**.
+    - **Hash address (4-bytes):** địa chỉ của hàm băm trong chuỗi.
+- **WOTS_PK (Type = 1):**
+  - **Mục đích:** được sử dụng khi nén khóa công khai **WOTS⁺**.
+  - **Cấu trúc:**
+    - **Key pair address (4-bytes):** chỉ mục của cặp khóa **WOTS⁺**.
+    - **Padding (8-bytes):** 2 từ cuối không được sử dụng và được đặt mặc định là $0$.
+- **TREE (Type = 2):**
+  - **Mục đich:** được sử dụng khi tính toán các hàm băm bên trong cây **XMSS**.
+  - **Cấu trúc:**
+    - **Padding (4-bytes):** luôn được đặt thành $0$.
+    - **Tree height (4-bytes):** chiều cao của node đang được tính toán trong cây.
+    - **Tree index (4-bytes):** chỉ mục của node ở chiều cao đó.
+- **FORS_TREE (Type = 3):**
+  - **Mục đích:** được sử dụng khi tính toán các hàm băm bên trong cây **FORS**.
+  - **Cấu trúc:**
+    - **Key pair address (4-bytes):** chỉ mục của khóa **FORS** được sử dụng.
+    - **Tree height (4-bytes):** chiều cao của node trong cây **FORS** ($0$ cho các node lá).
+    - **Tree index (4-bytes):** chỉ mục của node (được tính liên tục qua $k$ cây **FORS** khác nhau).
+- **FORS_ROOT (Type = 4):**
+  - **Mục đích:** được sử dụng khi nén $k$ gốc cây **FORS** lại với nhau.
+  - **Cấu trúc:**
+    - **Key pair address (4-bytes):** có ý nghĩa tương tự trong **FORS_TREE**.
+    - **Padding (8-bytes):** luôn được đặt là $0$.
+- **WOTS_PRF (Type = 5):**
+  - **Mục đích:** được sử dụng khi tạo các giá trị bí mật cho khóa **WOTS⁺**.
+  - **Cấu trúc:**
+    - **Key pair address (4-bytes):** chỉ mục của cặp khóa **WOTS⁺** trong cây **XMSS**.
+    - **Chain address (4-bytes):** chỉ mục của chuỗi trong **WOTS⁺**.
+    - **Hash address (4-bytes):** luôn được đặt thành $0$.
+- **FORS_PRF (Type = 6):**
+  - **Mục đích:** được sử dụng khi tạo các giá trị bí mật cho khóa **FORS**.
+  - **Cấu trúc:**
+    - **Key pair address (4-bytes):** chỉ mục của khóa **FORS** được sử dụng.
+    - **Tree height (4-bytes):** luôn được đặt là $0$.
+    - **Tree index (4-bytes):** chỉ mục của node.
 
-
-
-
+![all text](/images/2.png)
 
 
 
