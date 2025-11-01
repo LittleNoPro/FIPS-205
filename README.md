@@ -25,15 +25,22 @@ Khóa bí mật **SLH-DSA** bao gồm `SK.seed` ($n$-byte) được dùng để 
 ### 2.1 Hash Functions and Pseudorandom Functions
 
 **SLH-DSA** được thực hiện bởi $6$ hàm $- PRF_{msg}, H_{msg}, PRF, T_\mathbb{l}, H, F -$ chúng đều được xây dựng sử dụng hàm **hash** hoặc [XOFs](https://csrc.nist.gov/glossary/term/extendable_output_function) với độ dài đầu ra cố định. Đầu vào và đầu ra của mỗi **function** đều là các chuỗi bytes. Ta định nghĩa $\mathbb{B} = \{0,...,255 \}$ là một tập hợp các bytes, $\mathbb{B}^n$ là tập hợp các chuỗi bytes mà mỗi chuỗi có chính xác $n$-bytes và $\mathbb{B}^*$ là một tập hợp các chuỗi bytes. Chi tiết về các hàm:
-- $PRF_{msg}(SK.prf, opt\_rand, M) \ \ \  (\mathbb{B}^n \times \mathbb{B}^n \times \mathbb{B}^* \rightarrow \mathbb{B}^n)$: là hàm giả ngẫu nhiên (PRF) được sử dụng để tạo ra các giá trị ngẫu nhiên hóa $(R)$ cho việc băm ngẫu nhiên của thông điệp cần ký.
+- $PRF_{msg}(SK.prf, opt \ rand, M) \ \ \  (\mathbb{B}^n \times \mathbb{B}^n \times \mathbb{B}^* \rightarrow \mathbb{B}^n)$: là hàm giả ngẫu nhiên (PRF) được sử dụng để tạo ra các giá trị ngẫu nhiên hóa $(R)$ cho việc băm ngẫu nhiên của thông điệp cần ký.
 - $H_{msg}(R, PK.seed, PK.root, M) \ \ \  (\mathbb{B}^n \times \mathbb{B}^n \times \mathbb{B}^n \times \mathbb{B}^* \rightarrow \mathbb{B}^n)$: hàm này được sử dụng để tạo **digest** cho thông điệp cần ký.
 - $PRF(PK.seed, SK.seed, ADRS) \ \ \  (\mathbb{B}^n \times \mathbb{B}^n \times \mathbb{B}^{32} \rightarrow \mathbb{B}^n)$: là một PRF được sử dụng để tạo các giá trị bí mật trong khóa riêng của **WOTS⁺** và **FORS**.
 - $T_l(PK.seed, ADRS, M_l) \ \ \  (\mathbb{B}^n \times \mathbb{B}^{32} \times \mathbb{B}^{ln} \rightarrow \mathbb{B}^n)$: đây là một hàm **hash** ánh xạ một thông điệp $ln$-bytes thành một thông điệp $n$-bytes.
 - $H(PK.seed, ADRS, M_2) \ \ \  (\mathbb{B}^n \times \mathbb{B}^{32} \times \mathbb{B}^{2n} \rightarrow \mathbb{B}^n)$: là một trường hợp đặc biệt của hàm $T_l$ khi nó nhận đầu vào là một thông điệp $2n$-bytes.
 - $F(PK.seed, ADRS, M_1) \ \ \  (\mathbb{B}^n \times \mathbb{B}^{32} \times \mathbb{B}^n \rightarrow \mathbb{B}^n)$: là một hàm **hash** nhập vào chuỗi $n$-bytes và xử lý tạo thành một chuỗi $n$-bytes.
 
+### 2.2 Addresses
 
+Ta thấy rằng, $4$ trên $6$ function được mô tả ở trên nhận đầu vào là một địa chỉ dài $32$-bytes **(ADRS)**. Một **ADRS** bao gồm các giá trị public chỉ ra vị trí của giá trị đang được tính toán bởi function. Mỗi **ADRS** khác nhau được sử dụng để gọi các function khác nhau. Trong trường hợp của **PRF**, **ADRS** được sử dụng để tạo ra một lượng lớn các giá trị bí mật khác nhau từ một **seed** duy nhất. Trong trường hợp của $T_l, H, F$, **ADRS** được sử dụng để giảm thiểu các cuộc tấn công đa mục tiêu (multi-target attacks).
 
+Cấu trúc của **ADRS** được chia thành $8$-words, mỗi word dài $4$-bytes và các giá trị được mã hóa dưới dạng số nguyên không dâu theo thứ tự **big-endian**:
+- **Layer Address (4-bytes)**: chỉ định tầng của cây **XMSS** trong **hypertree**.
+- **Tree Address (12-bytes)**: chỉ định vị trí của một cây **XMSS** trong một tầng của **hypertree**. Cây **XMSS** trái cùng của lớp này có địa chỉ là $0$ và cây **XMSS** phải cùng của lớp $L$ có địa chỉ là $2^{(d - 1 - L)h'} -1$.
+- **Type (4-bytes)**: chỉ định loại địa chỉ, khác nhau tùy thuộc vào mục đích sử dụng.
+- **12 bytes**:
 
 
 
